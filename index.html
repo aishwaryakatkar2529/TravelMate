@@ -1,0 +1,601 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>TravelMate – AWS LAMP Project</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=DM+Sans:wght@300;400;500;600&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet"/>
+<style>
+  :root {
+    --ocean:   #065A82;
+    --teal:    #1C7293;
+    --sky:     #9ECDDC;
+    --coral:   #F96167;
+    --sand:    #FFF8F0;
+    --dark:    #0B2132;
+    --mid:     #1E4258;
+    --white:   #ffffff;
+    --gray:    #5A7184;
+    --lgray:   #EAF4FA;
+    --gold:    #F5C842;
+  }
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: 'DM Sans', sans-serif;
+    background: var(--sand);
+    color: var(--dark);
+    overflow-x: hidden;
+  }
+
+  /* ── HERO ── */
+  .hero {
+    background: linear-gradient(135deg, var(--dark) 0%, var(--ocean) 60%, var(--teal) 100%);
+    padding: 80px 40px 60px;
+    position: relative;
+    overflow: hidden;
+  }
+  .hero::before {
+    content: '';
+    position: absolute;
+    width: 600px; height: 600px;
+    border-radius: 50%;
+    background: rgba(255,255,255,0.04);
+    top: -200px; right: -150px;
+  }
+  .hero::after {
+    content: '';
+    position: absolute;
+    width: 300px; height: 300px;
+    border-radius: 50%;
+    background: rgba(249,97,103,0.15);
+    bottom: -80px; left: 80px;
+  }
+  .hero-inner { max-width: 960px; margin: 0 auto; position: relative; z-index: 1; }
+  .plane { font-size: 64px; display: block; margin-bottom: 16px; animation: float 3s ease-in-out infinite; }
+  @keyframes float { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-12px)} }
+
+  h1 {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(48px, 8vw, 80px);
+    color: var(--white);
+    line-height: 1.05;
+    letter-spacing: -1px;
+  }
+  h1 span { color: var(--gold); }
+  .tagline {
+    color: var(--sky);
+    font-size: 18px;
+    font-weight: 300;
+    margin: 14px 0 28px;
+    letter-spacing: 0.5px;
+  }
+  .badges { display: flex; flex-wrap: wrap; gap: 10px; margin-bottom: 32px; }
+  .badge {
+    background: rgba(255,255,255,0.12);
+    border: 1px solid rgba(255,255,255,0.2);
+    color: var(--white);
+    padding: 6px 14px;
+    border-radius: 20px;
+    font-size: 13px;
+    font-family: 'DM Mono', monospace;
+    backdrop-filter: blur(4px);
+  }
+  .badge.live { background: rgba(46,213,115,0.25); border-color: #2ed573; color: #2ed573; }
+  .live-link {
+    display: inline-flex; align-items: center; gap: 10px;
+    background: var(--coral);
+    color: var(--white);
+    padding: 14px 28px;
+    border-radius: 8px;
+    font-weight: 600;
+    font-size: 16px;
+    text-decoration: none;
+    transition: transform .2s, box-shadow .2s;
+    box-shadow: 0 4px 20px rgba(249,97,103,0.4);
+  }
+  .live-link:hover { transform: translateY(-2px); box-shadow: 0 8px 28px rgba(249,97,103,0.5); }
+
+  /* ── SECTIONS ── */
+  section { max-width: 960px; margin: 0 auto; padding: 60px 24px; }
+  .section-label {
+    font-family: 'DM Mono', monospace;
+    font-size: 12px;
+    color: var(--coral);
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    margin-bottom: 8px;
+  }
+  h2 {
+    font-family: 'Playfair Display', serif;
+    font-size: 36px;
+    color: var(--dark);
+    margin-bottom: 32px;
+  }
+  .divider {
+    width: 100%; height: 1px;
+    background: linear-gradient(90deg, var(--coral), transparent);
+    margin: 0 auto 60px;
+  }
+
+  /* ── SCREENSHOTS ── */
+  .screenshots-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+  }
+  .screenshot-card {
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: 0 8px 30px rgba(6,90,130,0.15);
+    border: 2px solid rgba(6,90,130,0.08);
+    background: var(--white);
+    transition: transform .3s, box-shadow .3s;
+  }
+  .screenshot-card:hover { transform: translateY(-4px); box-shadow: 0 16px 40px rgba(6,90,130,0.2); }
+  .screenshot-card.wide { grid-column: 1 / -1; }
+
+  .sc-bar {
+    background: #1E2D3D;
+    padding: 10px 14px;
+    display: flex; align-items: center; gap: 8px;
+  }
+  .sc-dot { width: 10px; height: 10px; border-radius: 50%; }
+  .sc-dot.r { background: #FF5F57; }
+  .sc-dot.y { background: #FFBD2E; }
+  .sc-dot.g { background: #28CA41; }
+  .sc-url {
+    background: rgba(255,255,255,0.08);
+    color: rgba(255,255,255,0.6);
+    font-family: 'DM Mono', monospace;
+    font-size: 11px;
+    padding: 3px 10px;
+    border-radius: 4px;
+    flex: 1;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  .sc-label {
+    padding: 10px 14px 6px;
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--ocean);
+    font-family: 'DM Mono', monospace;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+  }
+  .sc-frame {
+    width: 100%;
+    height: 320px;
+    border: none;
+    display: block;
+    background: #f9f9f9;
+    pointer-events: none;
+    transform: scale(0.6);
+    transform-origin: top left;
+    width: 167%;
+    height: 533px;
+  }
+  .sc-wrapper { overflow: hidden; height: 320px; position: relative; }
+
+  /* ── ABOUT ── */
+  .about-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; }
+  .about-card {
+    background: var(--white);
+    border-radius: 12px;
+    padding: 28px;
+    border-left: 4px solid var(--coral);
+    box-shadow: 0 2px 16px rgba(0,0,0,0.05);
+  }
+  .about-card h3 { font-size: 15px; font-weight: 600; color: var(--ocean); margin-bottom: 10px; }
+  .about-card p  { font-size: 14px; color: var(--gray); line-height: 1.7; }
+
+  /* ── TECH STACK ── */
+  .lamp-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; margin-bottom: 24px; }
+  .lamp-card {
+    border-radius: 12px;
+    padding: 28px 16px;
+    text-align: center;
+    color: var(--white);
+    position: relative;
+    overflow: hidden;
+  }
+  .lamp-card::after {
+    content: attr(data-letter);
+    position: absolute;
+    font-family: 'Playfair Display', serif;
+    font-size: 100px;
+    font-weight: 900;
+    color: rgba(255,255,255,0.07);
+    bottom: -20px; right: -10px;
+    line-height: 1;
+  }
+  .lamp-card.l { background: linear-gradient(135deg,#2C5F2D,#3a7a3b); }
+  .lamp-card.a { background: linear-gradient(135deg,#C0392B,#e74c3c); }
+  .lamp-card.m { background: linear-gradient(135deg,#1A5276,#2471a3); }
+  .lamp-card.p { background: linear-gradient(135deg,#6C3483,#8e44ad); }
+  .lamp-letter { font-family:'Playfair Display',serif; font-size:52px; font-weight:900; display:block; position:relative; z-index:1; }
+  .lamp-name   { font-size:15px; font-weight:700; display:block; margin:6px 0 4px; position:relative; z-index:1; }
+  .lamp-desc   { font-size:11px; opacity:0.85; position:relative; z-index:1; }
+
+  .frontend-bar {
+    background: var(--white);
+    border-radius: 10px;
+    padding: 16px 24px;
+    display: flex; align-items: center; gap: 20px;
+    border: 1px solid var(--lgray);
+    flex-wrap: wrap;
+  }
+  .frontend-bar strong { color: var(--ocean); font-size: 14px; }
+  .tech-pill {
+    background: var(--lgray);
+    color: var(--ocean);
+    padding: 5px 14px;
+    border-radius: 20px;
+    font-size: 13px;
+    font-weight: 500;
+  }
+
+  /* ── AWS ── */
+  .aws-box {
+    background: var(--white);
+    border-radius: 12px;
+    padding: 32px;
+    box-shadow: 0 2px 20px rgba(0,0,0,0.06);
+    border: 2px dashed rgba(6,90,130,0.2);
+  }
+  .aws-label {
+    font-family: 'DM Mono', monospace;
+    font-size: 11px;
+    color: var(--gray);
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    margin-bottom: 16px;
+  }
+  .aws-info { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; }
+  .aws-item { text-align: center; }
+  .aws-item .val { font-family:'DM Mono',monospace; font-size:13px; color:var(--ocean); font-weight:600; }
+  .aws-item .key { font-size:11px; color:var(--gray); margin-top:4px; }
+
+  /* ── PACKAGES TABLE ── */
+  .pkg-table { width: 100%; border-collapse: collapse; border-radius: 12px; overflow: hidden; box-shadow: 0 2px 20px rgba(0,0,0,0.06); }
+  .pkg-table thead tr { background: var(--ocean); color: var(--white); }
+  .pkg-table thead th { padding: 14px 16px; text-align: left; font-size: 13px; font-weight: 600; }
+  .pkg-table tbody tr { background: var(--white); transition: background .2s; }
+  .pkg-table tbody tr:nth-child(even) { background: var(--lgray); }
+  .pkg-table tbody tr:hover { background: #D6EEF8; }
+  .pkg-table td { padding: 12px 16px; font-size: 13px; color: var(--gray); border-bottom: 1px solid #eef4f8; }
+  .pkg-table td:first-child { font-size: 18px; }
+  .pkg-table td:nth-child(2) { color: var(--dark); font-weight: 600; }
+  .price { color: var(--coral) !important; font-weight: 700 !important; font-size: 14px !important; }
+
+  /* ── STRUCTURE ── */
+  .code-block {
+    background: var(--dark);
+    border-radius: 12px;
+    padding: 28px 32px;
+    font-family: 'DM Mono', monospace;
+    font-size: 13px;
+    line-height: 1.9;
+    color: #A8D8EA;
+    overflow-x: auto;
+    box-shadow: 0 4px 24px rgba(0,0,0,0.15);
+  }
+  .code-block .dir  { color: var(--gold); }
+  .code-block .file { color: #C3E8FF; }
+  .code-block .cm   { color: #5A7C90; font-style: italic; }
+  .code-block .cm::before { content: "  # "; }
+
+  /* ── FEATURES ── */
+  .feat-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; }
+  .feat-card {
+    background: var(--white);
+    border-radius: 12px;
+    padding: 24px;
+    box-shadow: 0 2px 12px rgba(0,0,0,0.05);
+    border-top: 3px solid var(--coral);
+    transition: transform .2s;
+  }
+  .feat-card:hover { transform: translateY(-3px); }
+  .feat-icon { font-size: 28px; margin-bottom: 10px; display: block; }
+  .feat-card h3 { font-size: 15px; color: var(--ocean); font-weight: 700; margin-bottom: 6px; }
+  .feat-card p  { font-size: 13px; color: var(--gray); line-height: 1.6; }
+
+  /* ── DEPLOY ── */
+  .deploy-steps { display: flex; flex-direction: column; gap: 16px; }
+  .step {
+    display: flex; gap: 20px;
+    background: var(--white);
+    border-radius: 10px;
+    padding: 20px 24px;
+    box-shadow: 0 2px 12px rgba(0,0,0,0.04);
+    align-items: flex-start;
+  }
+  .step-num {
+    background: var(--ocean);
+    color: var(--white);
+    width: 34px; height: 34px;
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-weight: 700; font-size: 14px;
+    flex-shrink: 0;
+  }
+  .step h4 { font-size: 15px; color: var(--dark); font-weight: 600; margin-bottom: 4px; }
+  .step code {
+    font-family: 'DM Mono', monospace;
+    font-size: 12px;
+    background: var(--lgray);
+    padding: 2px 8px;
+    border-radius: 4px;
+    color: var(--ocean);
+    display: inline-block;
+    margin-top: 6px;
+  }
+
+  /* ── FOOTER ── */
+  footer {
+    background: var(--dark);
+    color: rgba(255,255,255,0.5);
+    text-align: center;
+    padding: 40px 24px;
+    font-size: 14px;
+  }
+  footer strong { color: var(--gold); font-family: 'Playfair Display', serif; }
+
+  @media (max-width: 680px) {
+    .screenshots-grid, .about-grid, .lamp-grid, .aws-info, .feat-grid { grid-template-columns: 1fr; }
+    .screenshot-card.wide { grid-column: auto; }
+  }
+</style>
+</head>
+<body>
+
+<!-- HERO -->
+<div class="hero">
+  <div class="hero-inner">
+    <span class="plane">✈</span>
+    <h1>Travel<span>Mate</span></h1>
+    <p class="tagline">Tour Package Booking Web App &nbsp;·&nbsp; Built on AWS LAMP Stack</p>
+    <div class="badges">
+      <span class="badge">AWS EC2</span>
+      <span class="badge">Linux</span>
+      <span class="badge">Apache2</span>
+      <span class="badge">MySQL</span>
+      <span class="badge">PHP</span>
+      <span class="badge">HTML · CSS · JS</span>
+      <span class="badge live">● Live</span>
+    </div>
+    <a class="live-link" href="http://65.2.169.91/travelmate/" target="_blank">🌐 &nbsp;View Live Project &nbsp;→</a>
+  </div>
+</div>
+
+<!-- SCREENSHOTS -->
+<section>
+  <p class="section-label">Live Preview</p>
+  <h2>Project Screenshots</h2>
+
+  <div class="screenshots-grid">
+
+    <div class="screenshot-card wide">
+      <div class="sc-bar">
+        <span class="sc-dot r"></span><span class="sc-dot y"></span><span class="sc-dot g"></span>
+        <span class="sc-url">http://65.2.169.91/travelmate/index.php</span>
+      </div>
+      <div class="sc-label">🏠 Home Page</div>
+      <div class="sc-wrapper">
+        <iframe class="sc-frame" src="http://65.2.169.91/travelmate/index.php" title="Home Page" loading="lazy" sandbox="allow-same-origin allow-scripts"></iframe>
+      </div>
+    </div>
+
+    <div class="screenshot-card">
+      <div class="sc-bar">
+        <span class="sc-dot r"></span><span class="sc-dot y"></span><span class="sc-dot g"></span>
+        <span class="sc-url">http://65.2.169.91/travelmate/packages.php</span>
+      </div>
+      <div class="sc-label">📦 All Packages</div>
+      <div class="sc-wrapper">
+        <iframe class="sc-frame" src="http://65.2.169.91/travelmate/packages.php" title="Packages" loading="lazy" sandbox="allow-same-origin allow-scripts"></iframe>
+      </div>
+    </div>
+
+    <div class="screenshot-card">
+      <div class="sc-bar">
+        <span class="sc-dot r"></span><span class="sc-dot y"></span><span class="sc-dot g"></span>
+        <span class="sc-url">http://65.2.169.91/travelmate/package-detail.php?id=1</span>
+      </div>
+      <div class="sc-label">🔍 Package Detail</div>
+      <div class="sc-wrapper">
+        <iframe class="sc-frame" src="http://65.2.169.91/travelmate/package-detail.php?id=1" title="Package Detail" loading="lazy" sandbox="allow-same-origin allow-scripts"></iframe>
+      </div>
+    </div>
+
+    <div class="screenshot-card">
+      <div class="sc-bar">
+        <span class="sc-dot r"></span><span class="sc-dot y"></span><span class="sc-dot g"></span>
+        <span class="sc-url">http://65.2.169.91/travelmate/login.php</span>
+      </div>
+      <div class="sc-label">🔐 Login Page</div>
+      <div class="sc-wrapper">
+        <iframe class="sc-frame" src="http://65.2.169.91/travelmate/login.php" title="Login" loading="lazy" sandbox="allow-same-origin allow-scripts"></iframe>
+      </div>
+    </div>
+
+    <div class="screenshot-card">
+      <div class="sc-bar">
+        <span class="sc-dot r"></span><span class="sc-dot y"></span><span class="sc-dot g"></span>
+        <span class="sc-url">http://65.2.169.91/travelmate/register.php</span>
+      </div>
+      <div class="sc-label">📝 Register Page</div>
+      <div class="sc-wrapper">
+        <iframe class="sc-frame" src="http://65.2.169.91/travelmate/register.php" title="Register" loading="lazy" sandbox="allow-same-origin allow-scripts"></iframe>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<div class="divider" style="max-width:960px;margin:0 auto;"></div>
+
+<!-- ABOUT -->
+<section>
+  <p class="section-label">Overview</p>
+  <h2>About the Project</h2>
+  <div class="about-grid">
+    <div class="about-card">
+      <h3>🎯 What is TravelMate?</h3>
+      <p>A full-featured travel tour package booking platform where users can browse curated destinations across India, view detailed package info, and register/login to book their dream trip.</p>
+    </div>
+    <div class="about-card">
+      <h3>☁️ How is it deployed?</h3>
+      <p>The entire application is hosted on an AWS EC2 instance running Ubuntu Server with a complete LAMP stack — Apache handles HTTP, PHP processes logic, and MySQL stores all data.</p>
+    </div>
+    <div class="about-card">
+      <h3>📦 What does it include?</h3>
+      <p>10 fully detailed tour packages across India with per-person INR pricing, gallery images, inclusions list, and a secure login-protected booking flow.</p>
+    </div>
+    <div class="about-card">
+      <h3>👥 Who is it for?</h3>
+      <p>Indian travelers looking for curated domestic tours. Designed for groups, couples, families, and solo travellers with packages ranging from ₹8,999 to ₹34,999.</p>
+    </div>
+  </div>
+</section>
+
+<div class="divider" style="max-width:960px;margin:0 auto;"></div>
+
+<!-- FEATURES -->
+<section>
+  <p class="section-label">Functionality</p>
+  <h2>Key Features</h2>
+  <div class="feat-grid">
+    <div class="feat-card"><span class="feat-icon">🏠</span><h3>Home Page</h3><p>Hero section with "Discover Your Next Adventure" tagline, CTA buttons, and 6 featured package cards.</p></div>
+    <div class="feat-card"><span class="feat-icon">📦</span><h3>Packages Listing</h3><p>Full grid of all 10 curated tour packages with location, duration, max group size and INR pricing.</p></div>
+    <div class="feat-card"><span class="feat-icon">🔍</span><h3>Package Detail</h3><p>Full details — description, photo gallery, all inclusions (hotel, meals, transport, guide), and booking section.</p></div>
+    <div class="feat-card"><span class="feat-icon">🔐</span><h3>User Authentication</h3><p>Secure Login and Registration system. Booking is protected — guests are redirected to login/register.</p></div>
+    <div class="feat-card"><span class="feat-icon">💰</span><h3>Transparent Pricing</h3><p>Clear per-person INR pricing with "Inclusive of all taxes" label and free cancellation policy badge.</p></div>
+    <div class="feat-card"><span class="feat-icon">📱</span><h3>Responsive Design</h3><p>Mobile-friendly layout ensuring a great experience across phones, tablets, and desktops.</p></div>
+  </div>
+</section>
+
+<div class="divider" style="max-width:960px;margin:0 auto;"></div>
+
+<!-- TECH STACK -->
+<section>
+  <p class="section-label">Technology</p>
+  <h2>LAMP Tech Stack</h2>
+  <div class="lamp-grid">
+    <div class="lamp-card l" data-letter="L"><span class="lamp-letter">L</span><span class="lamp-name">Linux</span><span class="lamp-desc">Ubuntu Server LTS<br/>Operating System</span></div>
+    <div class="lamp-card a" data-letter="A"><span class="lamp-letter">A</span><span class="lamp-name">Apache2</span><span class="lamp-desc">Web Server<br/>Handles HTTP Requests</span></div>
+    <div class="lamp-card m" data-letter="M"><span class="lamp-letter">M</span><span class="lamp-name">MySQL</span><span class="lamp-desc">Relational Database<br/>Stores All Data</span></div>
+    <div class="lamp-card p" data-letter="P"><span class="lamp-letter">P</span><span class="lamp-name">PHP</span><span class="lamp-desc">Backend Scripting<br/>Server-side Logic</span></div>
+  </div>
+  <div class="frontend-bar">
+    <strong>Frontend:</strong>
+    <span class="tech-pill">HTML5</span>
+    <span class="tech-pill">CSS3</span>
+    <span class="tech-pill">JavaScript</span>
+    <span class="tech-pill">Responsive Design</span>
+  </div>
+</section>
+
+<div class="divider" style="max-width:960px;margin:0 auto;"></div>
+
+<!-- AWS -->
+<section>
+  <p class="section-label">Cloud Infrastructure</p>
+  <h2>AWS Deployment Info</h2>
+  <div class="aws-box">
+    <p class="aws-label">EC2 Instance Details</p>
+    <div class="aws-info">
+      <div class="aws-item"><div class="val">Amazon Web Services</div><div class="key">Cloud Provider</div></div>
+      <div class="aws-item"><div class="val">EC2 (Elastic Compute Cloud)</div><div class="key">Service</div></div>
+      <div class="aws-item"><div class="val">ap-south-1 (Mumbai)</div><div class="key">Region</div></div>
+      <div class="aws-item"><div class="val">65.2.169.91</div><div class="key">Public IP Address</div></div>
+      <div class="aws-item"><div class="val">Ubuntu Server LTS</div><div class="key">Operating System</div></div>
+      <div class="aws-item"><div class="val">/var/www/html/travelmate/</div><div class="key">Web Root Path</div></div>
+    </div>
+  </div>
+</section>
+
+<div class="divider" style="max-width:960px;margin:0 auto;"></div>
+
+<!-- PACKAGES TABLE -->
+<section>
+  <p class="section-label">Tour Packages</p>
+  <h2>All 10 Destinations</h2>
+  <table class="pkg-table">
+    <thead>
+      <tr><th>#</th><th>Package Name</th><th>Destination</th><th>Duration</th><th>Price/Person</th><th>Group Size</th></tr>
+    </thead>
+    <tbody>
+      <tr><td>🏖️</td><td>Goa Beach Paradise</td><td>Goa</td><td>4D / 3N</td><td class="price">₹12,999</td><td>Max 15</td></tr>
+      <tr><td>🏰</td><td>Royal Rajasthan Tour</td><td>Rajasthan</td><td>7D / 6N</td><td class="price">₹24,999</td><td>Max 20</td></tr>
+      <tr><td>🌿</td><td>Kerala Backwaters Bliss</td><td>Kerala</td><td>6D / 5N</td><td class="price">₹19,999</td><td>Max 12</td></tr>
+      <tr><td>🏔️</td><td>Manali Snow Adventure</td><td>Manali, HP</td><td>5D / 4N</td><td class="price">₹16,999</td><td>Max 18</td></tr>
+      <tr><td>🏝️</td><td>Andaman Island Escape</td><td>Andaman & Nicobar</td><td>6D / 5N</td><td class="price">₹32,999</td><td>Max 10</td></tr>
+      <tr><td>💑</td><td>Shimla Manali Honeymoon</td><td>Shimla & Manali</td><td>7D / 6N</td><td class="price">₹28,999</td><td>Max 8</td></tr>
+      <tr><td>🕌</td><td>Varanasi Spiritual Journey</td><td>Varanasi, UP</td><td>3D / 2N</td><td class="price">₹8,999</td><td>Max 25</td></tr>
+      <tr><td>🏍️</td><td>Leh Ladakh Bike Trip</td><td>Leh Ladakh</td><td>8D / 7N</td><td class="price">₹34,999</td><td>Max 15</td></tr>
+      <tr><td>⛰️</td><td>Ooty Coorg Hill Station</td><td>Ooty & Coorg</td><td>5D / 4N</td><td class="price">₹14,999</td><td>Max 20</td></tr>
+      <tr><td>🗺️</td><td>Golden Triangle Tour</td><td>Delhi-Agra-Jaipur</td><td>6D / 5N</td><td class="price">₹21,999</td><td>Max 25</td></tr>
+    </tbody>
+  </table>
+</section>
+
+<div class="divider" style="max-width:960px;margin:0 auto;"></div>
+
+<!-- STRUCTURE -->
+<section>
+  <p class="section-label">Codebase</p>
+  <h2>Project Structure</h2>
+  <div class="code-block">
+<span class="dir">travelmate/</span>
+├── <span class="file">index.php</span>              <span class="cm">Home page with featured packages</span>
+├── <span class="file">packages.php</span>           <span class="cm">All packages listing grid</span>
+├── <span class="file">package-detail.php</span>     <span class="cm">Individual package detail page</span>
+├── <span class="file">login.php</span>              <span class="cm">User login & authentication</span>
+├── <span class="file">register.php</span>           <span class="cm">New user registration</span>
+├── <span class="dir">config/</span>
+│   └── <span class="file">db.php</span>             <span class="cm">MySQL database connection</span>
+├── <span class="dir">assets/</span>
+│   ├── <span class="dir">css/</span>
+│   │   └── <span class="file">style.css</span>      <span class="cm">Main stylesheet</span>
+│   ├── <span class="dir">js/</span>
+│   │   └── <span class="file">main.js</span>        <span class="cm">JavaScript file</span>
+│   └── <span class="dir">images/</span>            <span class="cm">Static image assets</span>
+├── <span class="dir">includes/</span>
+│   ├── <span class="file">header.php</span>         <span class="cm">Common navigation bar</span>
+│   └── <span class="file">footer.php</span>         <span class="cm">Common footer</span>
+└── <span class="file">README.md</span>              <span class="cm">Project documentation</span>
+  </div>
+</section>
+
+<div class="divider" style="max-width:960px;margin:0 auto;"></div>
+
+<!-- DEPLOY STEPS -->
+<section>
+  <p class="section-label">Deployment</p>
+  <h2>How to Deploy on AWS LAMP</h2>
+  <div class="deploy-steps">
+    <div class="step"><div class="step-num">1</div><div><h4>Launch EC2 Instance</h4><p style="font-size:13px;color:var(--gray)">Go to AWS Console → EC2 → Launch Instance → Choose Ubuntu Server LTS → Select t2.micro (Free tier)</p></div></div>
+    <div class="step"><div class="step-num">2</div><div><h4>SSH into your server</h4><code>ssh -i your-key.pem ubuntu@YOUR_EC2_IP</code></div></div>
+    <div class="step"><div class="step-num">3</div><div><h4>Install LAMP Stack</h4><code>sudo apt update && sudo apt install apache2 mysql-server php php-mysqli libapache2-mod-php -y</code></div></div>
+    <div class="step"><div class="step-num">4</div><div><h4>Start & Enable Services</h4><code>sudo systemctl start apache2 && sudo systemctl enable apache2</code></div></div>
+    <div class="step"><div class="step-num">5</div><div><h4>Upload Project Files</h4><code>sudo cp -r travelmate/ /var/www/html/</code></div></div>
+    <div class="step"><div class="step-num">6</div><div><h4>Set File Permissions</h4><code>sudo chown -R www-data:www-data /var/www/html/travelmate</code></div></div>
+    <div class="step"><div class="step-num">7</div><div><h4>Import Database</h4><code>mysql -u root -p &lt; travelmate_db.sql</code></div></div>
+    <div class="step"><div class="step-num">8</div><div><h4>Open in Browser 🎉</h4><code>http://YOUR_EC2_IP/travelmate/</code></div></div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <p style="font-size:28px;margin-bottom:8px;">✈️</p>
+  <p><strong>TravelMate</strong> &nbsp;—&nbsp; AWS LAMP Stack Project</p>
+  <p style="margin-top:8px;">Built with Linux · Apache · MySQL · PHP · Hosted on AWS EC2</p>
+  <p style="margin-top:16px;font-size:12px;">© 2026 TravelMate. All rights reserved.</p>
+</footer>
+
+</body>
+</html>
